@@ -1,0 +1,40 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        test.java.srcDirs += 'src/test/kotlin'
+    }
+}
+
+dependencies {
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:1.10.19'
+    testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+
+    compile "$support_package:design:$support_version"
+    compile "$support_package:appcompat-v7:$support_version"
+    compile "$butterknife_package:butterknife:$butterknife_version"
+    compile "$retrofit_package:retrofit:$retrofit_version"
+    compile "$retrofit_package:adapter-rxjava2:$retrofit_version"
+    compile "$retrofit_package:converter-gson:$retrofit_version"
+    compile "$rxjava_package:rxandroid:$rxjava_version"
+    compile "$rxjava_package:rxjava:$rxjava_version"
+    compile "$dagger_package:dagger:$dagger_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+}
