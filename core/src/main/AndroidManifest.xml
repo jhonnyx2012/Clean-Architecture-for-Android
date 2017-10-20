@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="jhonnyx.clean.core">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.core">
     <application android:allowBackup="true"
         android:supportsRtl="true">
     </application>

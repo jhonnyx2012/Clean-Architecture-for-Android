@@ -24,6 +24,4 @@ dependencies {
     annotationProcessor "$butterknife_package:butterknife-compiler:$butterknife_version"
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile "$support_package:cardview-v7:$support_version"
-
-
 }

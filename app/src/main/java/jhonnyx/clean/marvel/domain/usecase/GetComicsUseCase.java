@@ -2,7 +2,7 @@ package jhonnyx.clean.marvel.domain.usecase;
 
 import android.support.annotation.NonNull;
 
-import com.papinotas.core.domain.usecase.UseCase;
+import com.core.domain.usecase.UseCase;
 
 import org.jetbrains.annotations.NotNull;
 

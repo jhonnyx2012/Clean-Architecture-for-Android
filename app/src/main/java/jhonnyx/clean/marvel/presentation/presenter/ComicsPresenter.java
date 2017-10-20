@@ -1,9 +1,11 @@
 package jhonnyx.clean.marvel.presentation.presenter;
 
 import android.support.annotation.NonNull;
+
+import com.core.domain.usecase.UseCaseObserver;
+
 import java.util.List;
 import javax.inject.Inject;
-import jhonnyx.clean.core.domain.usecase.UseCaseObserver;
 import jhonnyx.clean.marvel.R;
 import jhonnyx.clean.marvel.domain.model.Comic;
 import jhonnyx.clean.marvel.domain.usecase.GetComicsUseCase;
@@ -17,19 +19,16 @@ public class ComicsPresenter implements IComic.Presenter{
     private final GetComicsUseCase getUseCase;
     private IComic.View view;
 
-    @Inject
-    public ComicsPresenter(@NonNull GetComicsUseCase getUseCase) {
+    @Inject public ComicsPresenter(@NonNull GetComicsUseCase getUseCase) {
         this.getUseCase=getUseCase;
     }
 
-    @Override
-    public void initialize(IComic.View view) {
+    @Override public void initialize(IComic.View view) {
         this.view=view;
         onRefreshComics();
     }
 
-    @Override
-    public void onRefreshComics() {
+    @Override public void onRefreshComics() {
         view.showProgress(true);
         getUseCase.execute(new UseCaseObserver<List<Comic>>() {
             @Override

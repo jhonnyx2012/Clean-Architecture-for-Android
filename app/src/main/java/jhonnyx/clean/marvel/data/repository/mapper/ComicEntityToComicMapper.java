@@ -1,8 +1,9 @@
 package jhonnyx.clean.marvel.data.repository.mapper;
 
+import com.core.data.repository.mapper.Mapper;
+
 import java.util.ArrayList;
 import javax.inject.Inject;
-import jhonnyx.clean.core.data.repository.mapper.Mapper;
 import jhonnyx.clean.marvel.data.entity.ComicEntity;
 import jhonnyx.clean.marvel.data.entity.Url;
 import jhonnyx.clean.marvel.domain.model.Comic;
@@ -11,7 +12,7 @@ import jhonnyx.clean.marvel.domain.model.Comic;
  * Created by jhonnybarrios on 08-09-17.
  */
 
-public class ComicEntityToComicMapper extends Mapper<ComicEntity, Comic>{
+public class ComicEntityToComicMapper extends Mapper<ComicEntity, Comic> {
 
     @Inject
     ComicEntityToComicMapper() {}

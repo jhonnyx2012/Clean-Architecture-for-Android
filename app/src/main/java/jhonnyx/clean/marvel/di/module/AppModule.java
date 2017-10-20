@@ -1,11 +1,13 @@
 package jhonnyx.clean.marvel.di.module;
 
 import android.content.Context;
+
+import com.core.presentation.ui.fragment.LoadingDialogFragment;
+import com.core.util.DialogHelper;
+
 import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
-import jhonnyx.clean.core.presentation.ui.fragment.LoadingDialogFragment;
-import jhonnyx.clean.core.util.DialogHelper;
 import jhonnyx.clean.marvel.MarvelApp;
 
 /**

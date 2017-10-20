@@ -2,9 +2,10 @@ package jhonnyx.clean.marvel.presentation.presenter.contract;
 
 import android.support.annotation.StringRes;
 
+import com.core.presentation.presenter.contracts.BaseViewPresenter;
+import com.core.presentation.presenter.contracts.IProgressView;
+
 import java.util.List;
-import jhonnyx.clean.core.presentation.presenter.contracts.BaseViewPresenter;
-import jhonnyx.clean.core.presentation.presenter.contracts.IProgressView;
 import jhonnyx.clean.marvel.domain.model.Comic;
 
 /**
@@ -12,11 +13,11 @@ import jhonnyx.clean.marvel.domain.model.Comic;
  */
 
 public interface IComic {
-    interface Presenter extends BaseViewPresenter<View>{
+    interface Presenter extends BaseViewPresenter<View> {
         void onRefreshComics();
     }
 
-    interface View extends IProgressView{
+    interface View extends IProgressView {
         void setComicList(List<Comic> comicList);
         void showMessageError(@StringRes int idString);
     }

@@ -6,7 +6,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.TextView;
-import com.papinotas.core.presentation.ui.activity.BaseLoadingActivity;
+
+import com.core.presentation.ui.activity.BaseLoadingActivity;
+
 import java.util.List;
 import javax.inject.Inject;
 import butterknife.BindView;
@@ -18,36 +20,22 @@ import jhonnyx.clean.marvel.presentation.ui.adapter.ComicAdapter;
 import jhonnyx.clean.marvel.presentation.ui.adapter.OnItemClickListener;
 import jhonnyx.clean.marvel.util.Utilities;
 
-public class ComicsActivity extends BaseLoadingActivity implements IComic.View,SwipeRefreshLayout.OnRefreshListener, OnItemClickListener {
+public class ComicsActivity extends BaseLoadingActivity implements IComic.View,SwipeRefreshLayout.OnRefreshListener {
 
-    @BindView(R.id.list)
-    RecyclerView list;
+    @BindView(R.id.list) RecyclerView list;
+    @BindView(R.id.swipeRefreshLayout) SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.message) TextView tvMessage;
+    @Inject ComicAdapter adapter;
+    @Inject StaggeredGridLayoutManager layoutManager;
+    @Inject IComic.Presenter presenter;
 
-    @BindView(R.id.swipeRefreshLayout)
-    SwipeRefreshLayout swipeRefreshLayout;
+    @Override protected int getLayout() {return R.layout.activity_comics;}
 
-    @BindView(R.id.message)
-    TextView tvMessage;
-
-    @Inject
-    ComicAdapter adapter;
-
-    @Inject
-    StaggeredGridLayoutManager layoutManager;
-
-    @Inject
-    IComic.Presenter presenter;
-
-    @Override
-    protected int getLayout() {return R.layout.activity_comics;}
-
-    @Override
-    public void injectDependencies() {
+    @Override public void injectDependencies() {
         MarvelApp.getApp(this).getCompoment().inject(this);
     }
 
-    @Override
-    public void initView() {
+    @Override public void initView() {
         getSupportActionBar().setTitle("");
         initSwipeRefreshView();
         initList();
@@ -55,7 +43,12 @@ public class ComicsActivity extends BaseLoadingActivity implements IComic.View,S
     }
 
     private void initList() {
-        adapter.setItemClickListener(this);
+        adapter.setItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(Comic item) {
+                Utilities.openURL(item.webUrl,ComicsActivity.this);
+            }
+        });
         list.setLayoutManager(layoutManager);
         list.setAdapter(adapter);
     }
@@ -64,33 +57,24 @@ public class ComicsActivity extends BaseLoadingActivity implements IComic.View,S
         swipeRefreshLayout.setOnRefreshListener(this);
     }
 
-    @Override
-    public void onRefresh() {
+    @Override public void onRefresh() {
         presenter.onRefreshComics();
     }
 
-    @Override
-    public void showProgress(boolean show) {
+    @Override public void showProgress(boolean show) {
         if(show && !swipeRefreshLayout.isRefreshing())
             swipeRefreshLayout.setRefreshing(true);
         if(!show && swipeRefreshLayout.isRefreshing())
             swipeRefreshLayout.setRefreshing(false);
     }
 
-    @Override
-    public void setComicList(List<Comic> comicList) {
+    @Override public void setComicList(List<Comic> comicList) {
         adapter.setList(comicList);
         list.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void showMessageError(@StringRes int idString) {
+    @Override public void showMessageError(@StringRes int idString) {
         list.setVisibility(View.GONE);
         tvMessage.setText(idString);
-    }
-
-    @Override
-    public void onItemClick(Comic item) {
-        Utilities.openURL(item.webUrl,this);
     }
 }
