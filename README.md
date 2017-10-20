@@ -45,3 +45,32 @@ task clean(type: Delete) {
 }
 
 ```
+
+Y ademas, el archivo gradle de modulos donde implementes el core debe verse así:
+
+```
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    defaultConfig {
+        applicationId "aqui y tu application id"
+        minSdkVersion 16
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile project(':core')
+    annotationProcessor "$dagger_package:dagger-compiler:$dagger_version"
+    annotationProcessor "$butterknife_package:butterknife-compiler:$butterknife_version"
+}
