@@ -9,7 +9,7 @@ import android.view.View;
 
 import butterknife.ButterKnife;
 
-public abstract class BaseViewHolder extends RecyclerView.ViewHolder {
+public abstract class BaseViewHolder<T> extends RecyclerView.ViewHolder {
 
     public BaseViewHolder(View itemView) {
         super(itemView);
@@ -35,4 +35,6 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder {
     public Drawable getDrawable(int id) {
         return getContext().getResources().getDrawable(id);
     }
+
+    public void bind(int position, T item){}
 }

@@ -10,16 +10,13 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.core.R;
+import com.core.presentation.ui.adapter.holder.BaseViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
-
-/**
- * Created by tecnomei on 01-03-17.
- */
-public abstract class BaseListAdapter<T,V extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public abstract class BaseListAdapter<T,V extends BaseViewHolder<T>> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     protected static final int VIEW_TYPE_FOOTER= 2;
     protected static final int VIEW_TYPE_ITEM = 0;
     protected static final int VIEW_TYPE_LOADING = 1;
@@ -34,6 +31,7 @@ public abstract class BaseListAdapter<T,V extends RecyclerView.ViewHolder> exten
     private boolean isLoading;
     private int itemsPerPage;
     private int lastPage;
+    private OnItemLongClickListener<T> longClickListener;
 
     public BaseListAdapter() {
         this.list = new ArrayList<>();
@@ -82,13 +80,13 @@ public abstract class BaseListAdapter<T,V extends RecyclerView.ViewHolder> exten
                 }
             });
         } catch (Exception e) {
-           recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
                     int lastVisiblePosition = linearLayoutManager.findLastCompletelyVisibleItemPosition();
                     if (lastVisiblePosition >= getItemCount()-2) {
-                       attempToLoadMore(recyclerView,mOnLoadMoreListener);
+                        attempToLoadMore(recyclerView,mOnLoadMoreListener);
                     }
                 }
             });
@@ -150,8 +148,10 @@ public abstract class BaseListAdapter<T,V extends RecyclerView.ViewHolder> exten
             return getNewFooterViewHolder(v);
         }else if(viewType==VIEW_TYPE_LOADING)
             return new LoadingViewHolder(v);
-        return getNewViewHolder(v);
+        return createViewHolder(viewType,v);
     }
+
+    protected abstract V createViewHolder(int viewType, View v);
 
     public void remove(int adapterPosition) {
         list.remove(adapterPosition);
@@ -178,8 +178,6 @@ public abstract class BaseListAdapter<T,V extends RecyclerView.ViewHolder> exten
         return null;
     }
 
-    protected abstract V getNewViewHolder(View inflate);
-
     protected abstract int getLayoutIdByType(int viewType);
 
     @Override
@@ -189,15 +187,25 @@ public abstract class BaseListAdapter<T,V extends RecyclerView.ViewHolder> exten
                 @Override
                 public void onClick(View v) {
                     if(onItemClickListener!=null&&getItem(holder.getAdapterPosition())!=null)
-                    {
-                        onItemClickListener.onItemClick(holder.getAdapterPosition(),getItem(holder.getAdapterPosition()));
-                    }
+                        onItemClickListener.onItemClick(holder,holder.getAdapterPosition(),getItem(holder.getAdapterPosition()));
                 }
             });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(longClickListener!=null)
+                    longClickListener.onItemLongClick(holder,holder.getAdapterPosition(),getItem(holder.getAdapterPosition()));
+                return longClickListener!=null;
+            }
+        });
         if (holder instanceof LoadingViewHolder)
             onBindLoadingViewHolder((LoadingViewHolder) holder);
         else if(getItem(position)!=null)
             bindViewHolder((V) holder,position,getItem(position));
+    }
+
+    protected void bindViewHolder(V holder, int position, T item) {
+        holder.bind(position,item);
     }
 
     private void onBindLoadingViewHolder(LoadingViewHolder holder) {
@@ -209,7 +217,7 @@ public abstract class BaseListAdapter<T,V extends RecyclerView.ViewHolder> exten
         return position<0||list.size()==0||position>=list.size()?null:list.get(position);
     }
 
-    protected abstract void bindViewHolder(V holder, int position, T item);
+    //protected abstract void bindViewHolder(V holder, int position, T item);
 
     @Override
     public int getItemCount() {
@@ -263,7 +271,7 @@ public abstract class BaseListAdapter<T,V extends RecyclerView.ViewHolder> exten
     }
 
     public boolean addOrUpdate(T item) {
-       return addOrUpdate(item,true);
+        return addOrUpdate(item,true);
     }
 
     public void addAll(List<T> newItems) {
@@ -317,8 +325,16 @@ public abstract class BaseListAdapter<T,V extends RecyclerView.ViewHolder> exten
         recyclerView.getLayoutManager().onRestoreInstanceState(savedInstanceState.getParcelable(RV_STATE_KEY));
     }
 
-    public interface OnItemClickListener <T>{
-        void onItemClick(int adapterPosition, T item);
+    public void setOnLongClickListener(OnItemLongClickListener<T> longClickListener) {
+        this.longClickListener=longClickListener;
+    }
+
+    public static abstract class OnItemLongClickListener<T>{
+        public void onItemLongClick(RecyclerView.ViewHolder holder, int adapterPosition, T item){
+            onItemLongClick(adapterPosition,item);
+        }
+
+        public abstract void onItemLongClick(int adapterPosition, T item);
     }
 
     static class LoadingViewHolder extends RecyclerView.ViewHolder {
