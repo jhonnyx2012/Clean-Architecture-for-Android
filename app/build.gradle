@@ -1,4 +1,7 @@
 apply plugin: 'com.android.application'
+apply plugin: 'maven'
+
+group = 'com.gitlab.jhonnyx2012'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
